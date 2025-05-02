@@ -1,3 +1,3 @@
-const dbconnection = "mongodb://localhost:27017/getapet"
+const dbconnection = "mongodb://localhost:27017/pegsports"
 
 module.exports = dbconnection
