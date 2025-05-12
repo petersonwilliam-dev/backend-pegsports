@@ -37,7 +37,8 @@ module.exports = class AuthController {
             name,
             email,
             password: hashedPassword,
-            address: []
+            address: [],
+            permission: false
          }
 
          try {

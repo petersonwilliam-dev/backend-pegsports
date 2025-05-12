@@ -9,7 +9,7 @@ const Cart = mongoose.model(
             ref: 'User',
             required: true
         },
-        produtos: [
+        products: [
             {
                 type: Schema.Types.ObjectId,
                 ref: 'Product'

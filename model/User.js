@@ -43,7 +43,11 @@ const User = mongoose.model(
                     required: true
                 }
             }
-        ]
+        ],
+        permission: {
+            type: Boolean,
+            required: true
+        }
     }, {timestamps: true})
 )
 
