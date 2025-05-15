@@ -33,7 +33,7 @@ module.exports = class CartController {
         res.status(200).json({message: "Produto adicionado no carrinho", success: true})
     }
 
-    static async deleteItem(req, res) {
+    static async removeItem(req, res) {
 
         const idProduct = req.params.id
         const token = getToken(req)
@@ -64,8 +64,10 @@ module.exports = class CartController {
         const token = getToken(req)
         const user = await decodeToken(token)
 
-        const cart = await Cart.findOne({user: user._id}).populate('products')
+        const cart = await Cart.findOne({user: user._id}).populate('user').populate('products')
 
         res.status(200).json({cart})
     }
+
+
 }

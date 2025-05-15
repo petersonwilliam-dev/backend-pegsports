@@ -1,4 +1,6 @@
 const Product = require('../model/Product')
+const getToken = require('../util/getToken')
+const decodeToken = require('../util/decodeToken')
 const ObjectId = require('mongoose').Types.ObjectId
 const path = require('path')
 const fs = require('fs')
@@ -126,5 +128,100 @@ module.exports = class ProductController {
         await Product.findByIdAndDelete(id)
 
         res.status(200).json({message: "Produto excluído com sucesso", success: true})
+    }
+
+    static async addRating(req, res) {
+
+        const id = req.params.id
+        const token = getToken(req)
+        const user = await decodeToken(token)
+
+        const {grade, comment} = req.body
+
+        if (!grade) {
+            res.status(400).json({message: "Dê uma nota na sua avaliação", success: false})
+            return
+        }
+
+        const product = await Product.findById(id)
+
+        if (!product) {
+            res.status(404).json({message: "Produto não encontrado", success: false})
+            return
+        }
+
+        const userRating = {
+            _id: user._id,
+            name: user.name
+        }
+        
+        const rating = {
+            user: userRating,
+            grade
+        }
+
+        if (comment) {
+            rating.comment = comment
+        }
+
+        product.ratings.unshift(rating)
+
+        await Product.findByIdAndUpdate(id, product)
+
+        res.status(200).json({message: "Obrigado pela avaliação!", success: true})
+    }
+
+    static async removeRating(req, res) {
+
+        const {id, idRating} = req.params
+        const token = getToken(req)
+        const user = await decodeToken(token)
+
+        const product = await Product.findById(id)
+
+        if (!product) {
+            res.status(404).json({message: "Produto não encontrado!", success: false})
+            return
+        }
+
+        const ratingIndex = product.ratings.findIndex(rating => rating._id.equals(new ObjectId(idRating)))
+
+        if (ratingIndex === -1) {
+            res.status(404).json({message: "Avaliação não encontrada", success: false})
+            return
+        }
+
+        const rating = product.ratings[ratingIndex]
+
+        if (!rating.user._id.equals(new ObjectId(user._id))) {
+            res.status(403).json({message: "Não autorizado", success: false})
+            return
+        }
+
+        product.ratings.splice(ratingIndex, 1)
+
+        await product.save()
+
+        res.status(200).json({message: "Avaliação removida com sucesso", success: true})
+    }
+
+    static async getImage(req, res) {
+
+        const filename = req.params.filename
+
+        const filePath = path.join(`${__dirname}/../public/images/products/${filename}`)
+           
+        if (fs.existsSync(filePath)) {
+            const img = fs.readFileSync(filePath)
+            const ext = path.extname(filePath).substring(1)
+            res.writeHead(200, {
+                'Content-Type': 'image/' + ext,
+                'Content-Length': img.length
+            })
+            res.end(img)
+            return
+        }
+
+        res.status(404).json({message: `Imagem ${filename} não encontrada`, success: false})
     }
 }

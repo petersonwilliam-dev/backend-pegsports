@@ -9,5 +9,8 @@ routes.get("/:id", ProductController.getProductById)
 routes.post('/', verifyToken, checkPermission, imageUpload.array('images'), ProductController.create)
 routes.patch("/:id", verifyToken, checkPermission, ProductController.edit)
 routes.delete("/:id", verifyToken, checkPermission, ProductController.delete)
+routes.post("/rating/:id", verifyToken, ProductController.addRating)
+routes.delete("/rating/:id/:idRating", verifyToken, ProductController.removeRating)
+routes.get("/img/:filename", ProductController.getImage)
 
 module.exports = routes
