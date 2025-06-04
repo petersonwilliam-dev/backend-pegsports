@@ -16,8 +16,12 @@ const User = mongoose.model(
             type: String,
             required: true
         },
-        address: [
+        addresses: [
             {
+                receiver: {
+                    type: String,
+                    required: true
+                },
                 street: {
                     type: String,
                     required: true
@@ -31,6 +35,18 @@ const User = mongoose.model(
                     required: true
                 },
                 complement: {
+                    type: String,
+                    required: true
+                },
+                phone: {
+                    type: String,
+                    required: true
+                },
+                city: {
+                    type: String,
+                    required: true
+                },
+                uf: {
                     type: String,
                     required: true
                 },

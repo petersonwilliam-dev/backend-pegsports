@@ -11,7 +11,7 @@ module.exports = class ProductController {
         const images = req.files
 
         if (!name || !price || !description || !available || !category || !informations) {
-            res.status(400).json({message: "Toddos os campos devem estar preenchidos", success: false})
+            res.status(400).json({message: "Todos os campos devem estar preenchidos", success: false})
             return
         }
 
@@ -27,6 +27,7 @@ module.exports = class ProductController {
             category,
             available: JSON.parse(available),
             informations: JSON.parse(informations),
+            sale: {},
             ratings: [],
             images: []
         }
@@ -39,15 +40,51 @@ module.exports = class ProductController {
             await Product.create(product)
             res.status(201).json({message: "Produto criado!", success: true})
         } catch (err) {
-            res.status(200).json({message: `Erro no sistema: ${err}`, success: false})
+            res.status(500).json({message: `Erro no sistema: ${err}`, success: false})
         }
     }
 
     static async getProducts(req, res) {
 
-        const filter = req.query
+        const {name, category, price, sort, limit, page, hasProduct } = req.query
 
-        const products = await Product.find(filter)
+        const filter = {}
+        const sortObj = {}
+        let skip = undefined
+
+        if (name) {
+            filter.name = {$regex: name, $options: "i"};
+        }
+
+        if (category) {
+            filter.category = {$regex: category, $options: "i"}
+        }
+
+        if (price) {
+            filter.price = {$lte: Number(price)}
+        }
+
+        if (page) {
+            skip = (page - 1) * limit
+        }
+
+        sortObj.createdAt = 1
+
+        if (sort === "true") {
+            sortObj.createdAt = -1
+        }
+
+        const products = await Product.find(filter).sort(sortObj).skip(skip).limit(limit)
+
+        if (hasProduct) {
+            if (products.length > 0) {
+                res.status(200).json({hasProduct: true})
+                return
+            } else {
+                res.status(200).json({hasProduct: false})
+                return
+            }
+        }
 
         res.status(200).json({products})
     }
@@ -77,6 +114,9 @@ module.exports = class ProductController {
         
         const {name, price, description, available, category, informations} = req.body
 
+        let informationParsed = JSON.parse(informations)
+        let availableParsed = JSON.parse(available)
+
         if (!name || !price || !description || !available || !category || !informations) {
             res.status(400).json({message: "Toddos os campos devem estar preenchidos", success: false})
             return
@@ -94,7 +134,7 @@ module.exports = class ProductController {
             return
         }
 
-        const newProduct = {name,price,description, available, category, informations}
+        const newProduct = {name, price, description, available: availableParsed, category, informations: informationParsed}
 
         await Product.findByIdAndUpdate(id, newProduct)
 

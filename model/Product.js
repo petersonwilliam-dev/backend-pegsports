@@ -37,8 +37,15 @@ const Product = mongoose.model(
         ratings: [{
             user: {type: Object, required: true},
             grade: {type: Number, required: true},
-            comment: {type: String}
+            comment: {type: String},
+            createdAt: {
+                type: Date,
+                default: Date.now
+            }
         }],
+        sale: {
+            type: Object
+        },
         informations: [
             {
                 title: {

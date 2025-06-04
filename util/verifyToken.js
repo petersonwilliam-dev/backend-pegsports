@@ -8,7 +8,7 @@ const checkToken = (req, res, next) => {
     }
     
     const token = getToken(req)
-
+    
     if (!token) return res.status(401).json({message: "Acesso negado!"})
     
     try {
@@ -16,7 +16,7 @@ const checkToken = (req, res, next) => {
         req.user = verified
         next()
     } catch (err) {
-        return res.status(400).json({message: "Token inválido!"})
+        return res.status(401).json({message: "Token inválido! " + err})
     }
 }
 

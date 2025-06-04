@@ -18,7 +18,7 @@ const imageStorage = multer.diskStorage({
 const imageUpload = multer({
     storage: imageStorage,
     fileFilter: (req, file, cb) => {
-        if (!file.originalname.match(/\.(png|jpg|jpeg)$/)) {
+        if (!file.originalname.match(/\.(png|jpg|jpeg|webp)$/)) {
             return cb(new Error("Formato de imagem não suportado!"))
         }
         cb(null, true)

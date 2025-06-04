@@ -5,7 +5,8 @@ const createUserToken = async (user) => {
     const token = jsonwebtoken.sign({
         id: user._id,
         name: user.name,
-        address: user.address
+        addresses: user.addresses,
+        permission: user.permission
     }, secret)
 
     return token
