@@ -35,7 +35,11 @@ const Product = mongoose.model(
             required: true
         },
         ratings: [{
-            user: {type: Object, required: true},
+            user: {
+                type: Schema.Types.ObjectId,
+                ref: 'User',
+                required: true
+            },
             grade: {type: Number, required: true},
             comment: {type: String},
             createdAt: {

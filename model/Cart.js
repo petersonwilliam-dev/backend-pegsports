@@ -25,4 +25,4 @@ const Cart = mongoose.model(
     }, {timestamps: true})
 )
 
-module.exports = Cart
+module.exports = Cart 

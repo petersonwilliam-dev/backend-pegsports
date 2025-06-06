@@ -98,7 +98,7 @@ module.exports = class ProductController {
             return
         }
 
-        const product = await Product.findById(id)
+        const product = await Product.findById(id).populate({path: 'ratings.user', select : 'name'})
 
         if (!product) {
             res.status(404).json({message: "Produto não encontrado!", success: false})

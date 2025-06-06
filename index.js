@@ -1,12 +1,15 @@
+const SECRET_KEY = require('./config/secretKeyStripe')
+
 const express = require("express")
 const app = express()
 const cors = require('cors')
 const fetch = require('node-fetch')
+const stripe = require('stripe')(SECRET_KEY)
 
 const AuthRoutes = require('./routes/AuthRoutes')
 const ProductRoutes = require('./routes/ProductRoutes')
 const CartRoutes = require('./routes/CartRoutes')
-
+const BuyRoutes = require('./routes/BuyRoutes')
 const apiBase = "/api/v1"
 
 app.use(express.json())
@@ -17,6 +20,7 @@ app.use(cors({origin: "*", methods: 'GET, POST, PATCH, PUT, DELETE, OPTIONS', al
 app.use(apiBase + '/users', AuthRoutes)
 app.use(apiBase + '/products', ProductRoutes)
 app.use(apiBase + "/cart", CartRoutes)
+app.use(apiBase + "/buy", BuyRoutes)
 
 app.get("/api/v1/cep/:cep", async (req, res) => {
     const cep = req.params.cep
