@@ -57,7 +57,8 @@ module.exports = class ProductController {
         }
 
         if (category) {
-            filter.category = {$regex: category, $options: "i"}
+            const categoryArray = category.split(',')
+            filter.category = {$in: categoryArray}
         }
 
         if (price) {

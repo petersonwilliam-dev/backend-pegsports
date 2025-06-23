@@ -9,21 +9,18 @@ const Buy = mongoose.model(
             required: true,
             ref: 'User'
         },
-        products: [
-            {
-                product: {
-                    type: Schema.Types.ObjectId,
-                    required: true,
-                    ref: 'Product'
-                },
-                quantity: {
-                    type: Number,
-                    required: true
-                }
+        product: {
+            item: {
+                type: Object,
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true
             }
-        ],
+        },
         value: {
-            productValues: {
+            productValue: {
                 type: Number,
                 required: true
             },
@@ -33,7 +30,10 @@ const Buy = mongoose.model(
                 default: 0
             }
         },
-        address: Object,
+        address: {
+            type: Object,
+            required: true
+        },
         payment: {
             status:  {
                 type: String,
@@ -42,17 +42,16 @@ const Buy = mongoose.model(
             },
             method: {
                 type: String,
-                enum: ['credit_card', 'boleto', 'paypal', 'pix'],
+                enum: ['card', 'boleto', 'paypal', 'pix'],
                 required: true
             },
             transactionId: {
-                type: String,
-                required: true
+                type: String
             }
         },
         status: {
             type: String,
-            enum: ['pending', 'shipped', 'delivered', 'canceled'],
+            enum: ['pending', 'processing', 'shipped', 'delivered', 'completed', 'canceled'],
             default: 'pending'
         }
     }, {timestamps: true})
